@@ -15,7 +15,7 @@ public class UserServiceImp implements UserService {
     @Autowired
     private UserDao userDao;
 
-    @Transactional
+    @Transactional//todo выносим в класс, над методом где это нужно - @Transactional() с параметром readOnly, например
     @Override
     public void add(User user) {
         userDao.add(user);
@@ -32,5 +32,4 @@ public class UserServiceImp implements UserService {
     public User getUserFromCar(String model, int series) {
         return userDao.getUserFromCar(model, series);
     }
-
 }

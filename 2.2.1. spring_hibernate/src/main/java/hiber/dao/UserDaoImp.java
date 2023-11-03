@@ -9,11 +9,16 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+//todo начинаем привыкать к hotKeys: например горячими клавишами убираем - лишние импорты
+
 @Repository
 public class UserDaoImp implements UserDao {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    //todo повтор по коду - .getCurrentSession(). А можем? реализовать где-то и заинжектить сразу Session
+    // todo - в обязательном порядке - используем try_with_resources. это рабочий паттерн.
 
     @Override
     public void add(User user) {

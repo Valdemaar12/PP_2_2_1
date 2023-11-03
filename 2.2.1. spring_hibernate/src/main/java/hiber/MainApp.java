@@ -45,4 +45,7 @@ public class MainApp {
 
         context.close();
     }
+
+    //todo : SQLException - необходимо? в main
+    //todo : .gitignore - добавил сам, если бы не добавил - репозиторий (на ветку dev) превратился бы в мусорку...
 }
