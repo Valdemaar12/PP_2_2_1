@@ -1,15 +1,18 @@
 package hiber.dao;
 
 import hiber.model.User;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.TypedQuery;
 import java.util.List;
 
 
 @Repository
+@Transactional
 public class UserDaoImp implements UserDao {
 
     @Autowired
@@ -17,22 +20,37 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public void add(User user) {
-        sessionFactory.getCurrentSession().save(user);
+        try (Session session = sessionFactory.openSession()) {
+            session.save(user);
+        } catch (Exception e) {
+            System.err.println("Ошибка! - " + e);
+        }
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @Transactional(readOnly = true)
     public List<User> listUsers() {
-        TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("from User");
-        return query.getResultList();
+        try (Session session = sessionFactory.openSession()) {
+            TypedQuery<User> query = session.createQuery("from User");
+            return query.getResultList();
+        } catch (Exception e) {
+            System.err.println("Ошибка! - " + e);
+            throw e;
+        }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getUserFromCar(String model, int series) {
-        TypedQuery<User> query = sessionFactory.getCurrentSession().
-                createQuery("SELECT u FROM User u WHERE u.car.model=:model and u.car.series=:series", User.class);
-        query.setParameter("model", model).setParameter("series", series);
-        return query.getSingleResult();
+        try (Session session = sessionFactory.openSession()) {
+            TypedQuery<User> query = session.
+                    createQuery("SELECT u FROM User u WHERE u.car.model=:model and u.car.series=:series", User.class);
+            query.setParameter("model", model).setParameter("series", series);
+            return query.getSingleResult();
+        } catch (Exception e) {
+            System.err.println("Ошибка! - " + e);
+            throw e;
+        }
     }
 
 }
